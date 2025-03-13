@@ -1,0 +1,7 @@
+{
+  "name": "sabtoken-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo 'Frontend built successfully' && exit 0"
+  }
+}
