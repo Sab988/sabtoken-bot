@@ -1,26 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
+    <title>SAB Token App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAB Token Mini App</title>
+    <link rel="stylesheet" href="/styles.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="app">
-        <!-- Content will be rendered here by app.js -->
-    </div>
-    
-    <!-- Bottom Navigation Bar -->
-    <div class="tab-bar">
-        <button onclick="switchTab('home')" class="tab-button">🏠 Home</button>
-        <button onclick="switchTab('play')" class="tab-button">🎮 Play</button>
-        <button onclick="switchTab('socials')" class="tab-button">🌐 Socials</button>
-        <button onclick="switchTab('wallet')" class="tab-button">💰 Wallet</button>
-    </div>
-
-    <script src="app.js"></script>
+    <div id="app"></div>
+    <script src="/app.js"></script>
 </body>
 </html>
