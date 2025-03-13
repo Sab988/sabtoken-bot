@@ -1,14 +1,228 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SAB Token App</title>
+    <title>SAB Token | Premium Experience</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.1/lottie.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <style>
+    :root {
+        --primary: #FF6B6B;
+        --secondary: #4ECDC4;
+        --cyber-blue: #00f3ff;
+        --matrix-green: #00ff00;
+        --bg-gradient: radial-gradient(circle at 50% 50%, #1a1a1a, #000000);
+        --neon-shadow: 0 0 15px var(--cyber-blue);
+    }
+    
+    body {
+        background: var(--bg-gradient);
+        color: white;
+        font-family: 'Space Grotesk', sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        overflow-x: hidden;
+        cursor: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSI2IiBmaWxsPSIjZmZmIi8+PC9zdmc+'), auto;
+    }
+
+    .cyber-border {
+        position: relative;
+        border: 2px solid var(--cyber-blue);
+        box-shadow: var(--neon-shadow);
+        background: rgba(0, 0, 0, 0.9);
+        padding: 2rem;
+        margin: 2rem;
+        clip-path: polygon(20px 0, calc(100% - 20px) 0, 100% 20px, 100% calc(100% - 20px), calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 20px), 0 20px);
+    }
+
+    .holographic-card {
+        background: linear-gradient(45deg, 
+            rgba(78, 205, 196, 0.1), 
+            rgba(255, 107, 107, 0.1));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+    }
+
+    .cyber-button {
+        background: none;
+        border: 2px solid var(--cyber-blue);
+        color: var(--cyber-blue);
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .cyber-button:hover {
+        box-shadow: var(--neon-shadow);
+        text-shadow: var(--neon-shadow);
+        transform: translateY(-2px);
+    }
+    </style>
 </head>
 <body>
-    <div id="app"></div>
-    <script src="/app.js"></script>
+    <canvas class="particle-canvas"></canvas>
+    
+    <div class="cyber-border holographic-card">
+        <!-- 3D Avatar Container -->
+        <div id="avatar-container" class="floating"></div>
+        
+        <!-- Animated Balance Display -->
+        <div class="cyber-balance">
+            <lottie-player
+                src="https://assets9.lottiefiles.com/packages/lf20_4kx2q32h.json"
+                background="transparent"
+                speed="1"
+                style="width: 100px; height: 100px;"
+                loop
+                autoplay>
+            </lottie-player>
+            <h2 class="cyber-text">1500 SAB</h2>
+        </div>
+
+        <!-- Cyber Progress Bar -->
+        <div class="cyber-progress">
+            <div class="scanline"></div>
+        </div>
+
+        <!-- Social Grid -->
+        <div class="cyber-grid">
+            <div class="cyber-node" data-link="telegram">
+                <lottie-player
+                    src="https://assets1.lottiefiles.com/packages/lf20_6wutsrox.json"
+                    background="transparent"
+                    speed="1"
+                    style="width: 60px; height: 60px;"
+                    loop
+                    hover>
+                </lottie-player>
+            </div>
+        </div>
+    </div>
+<div class="cyber-container scanline-effect">
+  <div class="holographic-overlay"></div>
+  <h1 class="cyber-title">SAB TOKEN</h1>
+  
+  <div class="token-display">
+    1500 <span class="terminal-cursor"></span>
+  </div>
+  
+  <div class="cyber-grid">
+    <div class="grid-node cyber-button">Generate</div>
+    <div class="grid-node cyber-button">Transfer</div>
+    <div class="grid-node cyber-button">Stake</div>
+  </div>
+</div>
+    <!-- Lottie & Three.js Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.1/lottie.min.js"></script>
+    <script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    // WebGL Particle Background
+    class ParticleSystem {
+        constructor() {
+            this.canvas = document.querySelector('.particle-canvas');
+            this.renderer = new THREE.WebGLRenderer({ 
+                canvas: this.canvas, 
+                alpha: true 
+            });
+            this.scene = new THREE.Scene();
+            this.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            this.particles = new THREE.Group();
+            
+            this.init();
+        }
+
+        init() {
+            // Camera setup
+            this.camera.position.z = 5;
+
+            // Particle geometry
+            const geometry = new THREE.BufferGeometry();
+            const positions = [];
+            for(let i = 0; i < 5000; i++) {
+                positions.push(
+                    (Math.random() - 0.5) * 10,
+                    (Math.random() - 0.5) * 10,
+                    (Math.random() - 0.5) * 10
+                );
+            }
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            
+            // Material
+            const material = new THREE.PointsMaterial({
+                size: 0.02,
+                color: 0x00f3ff,
+                transparent: true,
+                blending: THREE.AdditiveBlending
+            });
+
+            // Points system
+            const particles = new THREE.Points(geometry, material);
+            this.scene.add(particles);
+
+            // Animation
+            this.animate = () => {
+                requestAnimationFrame(this.animate);
+                particles.rotation.x += 0.0001;
+                particles.rotation.y += 0.0001;
+                this.renderer.render(this.scene, this.camera);
+            }
+
+            // Resize handler
+            window.addEventListener('resize', this.onWindowResize);
+            this.onWindowResize();
+            this.animate();
+        }
+
+        onWindowResize = () => {
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    }
+
+    // Initialize systems
+    new ParticleSystem();
+
+    // Cyber UI Interactions
+    document.querySelectorAll('.cyber-node').forEach(node => {
+        node.addEventListener('mouseenter', () => {
+            gsap.to(node, {
+                scale: 1.1,
+                duration: 0.3,
+                ease: "power2.out"
+            });
+        });
+
+        node.addEventListener('mouseleave', () => {
+            gsap.to(node, {
+                scale: 1,
+                duration: 0.3,
+                ease: "power2.out"
+            });
+        });
+    });
+    </script>
 </body>
 </html>
