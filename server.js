@@ -2,10 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const crypto = require('crypto');
 
 const app = express();
 app.use(cors({
-    origin: 'https://sabbot.vercel.app'
+    origin: ['https://sabbot.vercel.app', 'https://telegram-web-app.js.org']
 }));
 app.use(express.json());
 
@@ -32,9 +33,32 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+// Telegram InitData Validation
+function validateInitData(initData) {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const params = new URLSearchParams(initData);
+    const hash = params.get('hash');
+    const dataCheckString = Array.from(params)
+        .filter(([key]) => key !== 'hash')
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, value]) => `${key}=${value}`)
+        .join('\n');
+
+    const secretKey = crypto.createHmac('sha256', 'WebAppData').update(botToken).digest();
+    const calculatedHash = crypto.createHmac('sha256', secretKey)
+        .update(dataCheckString)
+        .digest('hex');
+
+    return hash === calculatedHash;
+}
+
 // API Endpoints
 app.post('/api/user', async (req, res) => {
     try {
+        if (!validateInitData(req.headers['telegram-init-data'])) {
+            return res.status(401).json({ error: 'Unauthorized request' });
+        }
+
         const user = await User.findOneAndUpdate(
             { telegramId: req.body.user.id },
             {
@@ -55,6 +79,10 @@ app.post('/api/user', async (req, res) => {
 
 app.post('/api/click', async (req, res) => {
     try {
+        if (!validateInitData(req.headers['telegram-init-data'])) {
+            return res.status(401).json({ error: 'Unauthorized request' });
+        }
+
         const user = await User.findById(req.body.userId);
         if (user.dailyLimit > 0) {
             user.balance += 1;
@@ -69,7 +97,7 @@ app.post('/api/click', async (req, res) => {
     }
 });
 
-// Helper
+// Helper functions
 function generateReferralCode() {
     return Math.random().toString(36).substr(2, 8).toUpperCase();
 }
