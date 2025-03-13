@@ -1,39 +1,47 @@
-/* styles.css */
-/* Global Styles */
-body {
-    background-color: #000000;
-    color: #ffffff;
-    font-family: 'Arial', sans-serif;
+/* Base Styles */
+* {
     margin: 0;
-    padding: 0 0 60px 0; /* Space for bottom tab bar */
-    min-height: 100vh;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
 }
 
-/* Tab Bar */
+body {
+    background: #1a1a1a;
+    color: #ffffff;
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Tabs */
 .tab-bar {
     position: fixed;
     bottom: 0;
-    width: 100%;
-    height: 60px;
-    background: #1a1a1a;
+    left: 0;
+    right: 0;
     display: flex;
     justify-content: space-around;
-    align-items: center;
-    border-top: 1px solid #333;
+    padding: 10px 0;
+    background: #2d2d2d;
+    border-top: 1px solid #404040;
 }
 
-.tab-button {
+.tab-bar button {
     background: none;
     border: none;
     color: #fff;
-    font-size: 14px;
-    padding: 10px;
+    padding: 12px;
+    font-size: 16px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s;
 }
 
-.tab-button:hover {
+.tab-bar button.active {
     color: #4CAF50;
+    border-bottom: 2px solid #4CAF50;
 }
 
 /* Profile Section */
@@ -41,156 +49,64 @@ body {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    border: 3px solid #4CAF50;
     margin: 20px auto;
     display: block;
+    border: 3px solid #4CAF50;
 }
 
 /* Balance Display */
-.balance {
-    text-align: center;
-    font-size: 24px;
+.balance-box {
+    background: #2d2d2d;
+    padding: 20px;
+    border-radius: 10px;
     margin: 20px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    text-align: center;
 }
 
 .token-logo {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
-}
-
-/* Referrals Section */
-.referrals {
-    text-align: center;
-    padding: 15px;
-    background: #1a1a1a;
-    margin: 20px;
-    border-radius: 10px;
-}
-
-.referrals h3 {
-    margin: 0 0 10px 0;
-    color: #4CAF50;
+    vertical-align: middle;
+    margin-right: 10px;
 }
 
 /* Play Tab */
+.click-container {
+    text-align: center;
+    margin-top: 40px;
+}
+
 .click-area {
     width: 150px;
     height: 150px;
-    background: #1a1a1a;
+    background: #2d2d2d;
     border-radius: 50%;
-    margin: 30px auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin: 0 auto;
     cursor: pointer;
-    transition: transform 0.2s;
     position: relative;
     border: 3px solid #4CAF50;
 }
 
-.click-area:active {
-    transform: scale(0.95);
-}
-
 .click-logo {
     width: 80px;
-    height: 80px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
+/* Progress Bar */
 .progress-bar {
     width: 80%;
-    height: 20px;
-    background: #333;
+    height: 8px;
+    background: #404040;
+    border-radius: 4px;
     margin: 20px auto;
-    border-radius: 10px;
-    overflow: hidden;
 }
 
-.progress {
+.progress-fill {
     height: 100%;
     background: #4CAF50;
+    border-radius: 4px;
     transition: width 0.3s;
-}
-
-/* Socials Tab */
-.socials-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    padding: 20px;
-}
-
-.social-link {
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 15px;
-    text-align: center;
-    text-decoration: none;
-    color: white;
-    transition: 0.3s;
-}
-
-.social-link img {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 10px;
-    border-radius: 50%;
-    padding: 10px;
-    background: #333;
-}
-
-.social-link:hover {
-    transform: translateY(-3px);
-    background: #252525;
-}
-
-/* Wallet Tab */
-.connect-button {
-    background: #4CAF50;
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 25px;
-    font-size: 18px;
-    cursor: pointer;
-    display: block;
-    margin: 50px auto;
-    transition: 0.3s;
-}
-
-.connect-button:hover {
-    background: #45a049;
-    transform: scale(1.05);
-}
-
-/* Utility Classes */
-.text-center {
-    text-align: center;
-}
-
-.mt-20 {
-    margin-top: 20px;
-}
-
-.hidden {
-    display: none;
-}
-
-/* Click Feedback Animation */
-@keyframes floatUp {
-    0% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(-30px); }
-}
-
-.click-feedback {
-    position: absolute;
-    color: #4CAF50;
-    font-weight: bold;
-    animation: floatUp 1s forwards;
-    pointer-events: none;
 }
