@@ -1,5 +1,10 @@
 {
+  "name": "sabtoken-frontend",
+  "version": "1.0.0",
   "scripts": {
-    "build": "vite build"  # or "react-scripts build"
+    "build": "mkdir -p build && cp -r *.html *.js *.css *.json build/"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }
