@@ -1,4 +1,4 @@
-const tg = window.Telegram.WebApp;
+const tg = window.Telegram?.WebApp;
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
     manifestUrl: "https://sabbot.vercel.app/tonconnect-manifest.json"
 });
@@ -6,63 +6,50 @@ const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
 let userData = null;
 let currentTab = 'home';
 
+// Main Initialization
 async function init() {
     try {
-        tg.expand();
-        tg.enableClosingConfirmation();
+        if (tg) {
+            tg.expand();
+            tg.enableClosingConfirmation();
+        }
         await loadUserData();
         setupAutoReset();
         renderUI();
         setupNavigation();
     } catch (error) {
-        console.error('Initialization error:', error);
         showError('Failed to initialize app. Please try again.');
     }
 }
 
+// Load User Data
 async function loadUserData() {
     try {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user: tg.initDataUnsafe.user })
+            body: JSON.stringify({ user: tg?.initDataUnsafe?.user || {} })
         });
-        
-        if (!response.ok) throw new Error('Network response was not ok');
-        
         userData = await response.json();
     } catch (error) {
-        console.error('Failed to load user data:', error);
-        showError('Failed to load user data. Please refresh.');
+        showError('Failed to load user data');
     }
 }
 
+// UI Rendering
 function renderUI() {
     const appContainer = document.getElementById('app');
     if (!appContainer) return;
-
+    
     appContainer.innerHTML = `
         <div class="main-content">
             ${renderCurrentTab()}
         </div>
         ${renderTabBar()}
     `;
-
-    // Initialize tab-specific functionality
-    if (currentTab === 'play') initPlayTab();
-    if (currentTab === 'wallet') initWalletTab();
 }
 
-function renderCurrentTab() {
-    switch(currentTab) {
-        case 'home': return renderHome();
-        case 'play': return renderPlay();
-        case 'socials': return renderSocials();
-        case 'wallet': return renderWallet();
-        default: return renderHome();
-    }
-}
-
+// Tab Navigation
 function renderTabBar() {
     return `
     <div class="tab-bar">
@@ -74,28 +61,34 @@ function renderTabBar() {
     `;
 }
 
+// Tab Content Rendering
+function renderCurrentTab() {
+    switch(currentTab) {
+        case 'home': return renderHome();
+        case 'play': return renderPlay();
+        case 'socials': return renderSocials();
+        case 'wallet': return renderWallet();
+        default: return renderHome();
+    }
+}
+
 // Home Tab
 function renderHome() {
     return `
     <div class="tab-content">
         <img src="${userData?.photoUrl || 'https://drive.google.com/uc?export=view&id=1uXbKTmOKqJJul2iuUGXtiwY2fUibwIgn'}" 
              class="profile-pic" 
-             alt="Profile Picture">
-        <h2>@${userData?.username || 'Unknown User'}</h2>
-        
+             alt="Profile">
+        <h2>@${userData?.username || 'Guest'}</h2>
         <div class="balance-box">
             <img src="https://drive.google.com/uc?export=view&id=1uXbKTmOKqJJul2iuUGXtiwY2fUibwIgn" 
                  class="token-logo" 
-                 alt="Token Logo">
+                 alt="Token">
             <span class="balance-amount">${userData?.balance || 0} SAB</span>
         </div>
-        
         <div class="referrals-box">
-            <h3>📊 Referrals: ${userData?.referrals || 0}</h3>
-            <div class="referral-code">
-                <span>Your Code:</span>
-                <code>${userData?.referralCode || 'GENERATING...'}</code>
-            </div>
+            <h3>📈 Referrals: ${userData?.referrals || 0}</h3>
+            <p class="referral-code">Your Code: <code>${userData?.referralCode || 'LOADING...'}</code></p>
         </div>
     </div>
     `;
@@ -104,7 +97,7 @@ function renderHome() {
 // Play Tab
 function renderPlay() {
     const remaining = userData?.dailyLimit || 0;
-    const progressPercent = (remaining / 1500) * 100;
+    const progress = (remaining / 1500) * 100;
     
     return `
     <div class="tab-content">
@@ -112,13 +105,12 @@ function renderPlay() {
             <div class="click-area" onclick="handleTokenClick()">
                 <img src="https://drive.google.com/uc?export=view&id=1uXbKTmOKqJJul2iuUGXtiwY2fUibwIgn" 
                      class="click-logo" 
-                     alt="Click Logo">
-                <div class="click-counter">${remaining}/1500</div>
+                     alt="Click">
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${progressPercent}%"></div>
+                    <div class="progress-fill" style="width: ${progress}%"></div>
                 </div>
+                <div class="click-counter">${remaining}/1500</div>
             </div>
-            <div class="click-instruction">Tap the logo to earn tokens!</div>
         </div>
     </div>
     `;
@@ -134,13 +126,13 @@ function renderSocials() {
         </a>
         <a href="https://t.me/sabtokengroup" class="social-card telegram" target="_blank">
             <img src="https://www.freepnglogos.com/uploads/telegram-logo-png-0.png" alt="Telegram">
-            <span>Discussion Group</span>
+            <span>Discussion</span>
         </a>
         <a href="https://x.com/sabtoken" class="social-card twitter" target="_blank">
             <img src="https://www.freepnglogos.com/uploads/twitter-logo-png/twitter-logo-vector-png-clipart-1.png" alt="Twitter">
             <span>Twitter/X</span>
         </a>
-        <div class="social-card instagram" onclick="alert('Instagram coming soon!')">
+        <div class="social-card instagram" onclick="alert('Coming soon!')">
             <img src="https://www.freepnglogos.com/uploads/instagram-logo-png-transparent-0.png" alt="Instagram">
             <span>Instagram</span>
         </div>
@@ -152,20 +144,18 @@ function renderSocials() {
 function renderWallet() {
     return `
     <div class="tab-content wallet-content">
-        <div class="wallet-status">
-            ${userData?.walletAddress ? `
-                <div class="connected-wallet">
-                    <span>✅ Connected to:</span>
-                    <code>${userData.walletAddress.slice(0, 6)}...${userData.walletAddress.slice(-4)}</code>
-                </div>
-            ` : `
-                <button class="connect-button" onclick="connectWallet()">
-                    🔗 Connect Wallet
-                </button>
-            `}
-        </div>
+        ${userData?.walletAddress ? `
+            <div class="connected-wallet">
+                <span>✅ Connected:</span>
+                <code>${userData.walletAddress.slice(0, 6)}...${userData.walletAddress.slice(-4)}</code>
+            </div>
+        ` : `
+            <button class="connect-button" onclick="connectWallet()">
+                🔗 Connect Wallet
+            </button>
+        `}
         <div class="wallet-instruction">
-            Supported wallets: Tonkeeper, Tonhub
+            Supported: Tonkeeper, Tonhub
         </div>
     </div>
     `;
@@ -177,25 +167,19 @@ function switchTab(tab) {
     renderUI();
 }
 
-// Token Click Handler
+// Click Handler
 async function handleTokenClick() {
     try {
-        if (!userData || userData.dailyLimit <= 0) return;
-        
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/click`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: userData._id })
+            body: JSON.stringify({ userId: userData?._id })
         });
-
-        if (!response.ok) throw new Error('Click failed');
-        
-        userData = await response.json().user;
+        userData = await response.json();
         showClickFeedback();
         renderUI();
     } catch (error) {
-        console.error('Click error:', error);
-        showError('Failed to register click. Try again.');
+        showError('Failed to process click');
     }
 }
 
@@ -203,19 +187,10 @@ async function handleTokenClick() {
 async function connectWallet() {
     try {
         const connector = tonConnectUI.connector;
-        const walletsList = await tonConnectUI.getWallets();
-        
-        connector.onStatusChange(wallet => {
-            if (wallet) {
-                userData.walletAddress = wallet.account.address;
-                renderUI();
-            }
-        });
-        
-        await connector.connect(walletsList[0]);
+        const wallets = await tonConnectUI.getWallets();
+        await connector.connect(wallets[0]);
     } catch (error) {
-        console.error('Wallet connection failed:', error);
-        showError('Wallet connection failed. Please try again.');
+        showError('Wallet connection failed');
     }
 }
 
@@ -225,24 +200,23 @@ function showClickFeedback() {
     feedback.className = 'click-feedback';
     feedback.textContent = '+1';
     document.body.appendChild(feedback);
-    
-    setTimeout(() => {
-        feedback.remove();
-    }, 1000);
+    setTimeout(() => feedback.remove(), 1000);
 }
 
 function showError(message) {
-    tg.showAlert(message);
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    document.body.appendChild(errorDiv);
+    setTimeout(() => errorDiv.remove(), 3000);
 }
 
+// Daily Reset
 function setupAutoReset() {
-    const now = new Date();
+    const now = Date.now();
     const nextReset = new Date(now);
-    nextReset.setUTCHours(24, 0, 0, 0); // Next UTC midnight
-    
-    setTimeout(() => {
-        location.reload();
-    }, nextReset - now);
+    nextReset.setUTCHours(24, 0, 0, 0);
+    setTimeout(() => location.reload(), nextReset - now);
 }
 
 // Initialize
